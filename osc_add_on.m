@@ -4,6 +4,7 @@ close all;
 
 addpath("ginger","tst");
 %% Some configurations
+myvid=0;                                                                   % Whether to Save a video file
 SAV=0
 sav_dir='/Users/amirweinberg/ginger_int/superrad/';
 nam="025ps480c";
@@ -78,8 +79,6 @@ inp_struc.intslices   = intrct_slices;
 inp_struc.rgrid       = r_grid;
 inp_struc.ngrid       = n_grid;
 
-
-myvid=0;                                                                   % Whether to Save a video file
 
 for desyn=dd
 desyn_shft=desyn*(47*radWavelength);                                       % Calculate cavity shift length in meters 
