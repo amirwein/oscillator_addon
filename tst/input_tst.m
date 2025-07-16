@@ -1,6 +1,6 @@
 function [E1,E2,delt,i0,dx,rad_s,rad_e,ebm_s,ebm_e]= input_tst(reflect,ar,ai,inp_struc)
 %% function for Generating GINGER FIELD files
-my_dir='/Users/amirweinberg/oscillator_addon/cent/tst/';                           %Working Directory 
+my_dir='/Users/amirweinberg/oscillator_addon/tst/';                           %Working Directory 
 
 
 if reflect==1                                                              % First pass through undulator
