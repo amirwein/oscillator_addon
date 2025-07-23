@@ -1,5 +1,9 @@
 function [power_z,power_s,angl]= my_funct(ar,ai,i0,dx)
 %% Function to calculate the Radiation pulse in time and frequency domain
+%ar real part electric field
+%ai imaginary part electric field
+%i0 normalization constant from ginger
+%dx delt transverse grid
 
  power_s = abs(ar+1i*ai).^2;
  power_s = sum(sum(power_s,1),2);                                          % Sum over dx dy 
@@ -9,10 +13,6 @@ function [power_z,power_s,angl]= my_funct(ar,ai,i0,dx)
  Ea= sum(sum(Ea,1),2);
  angl=squeeze(Ea(1,1,:));
  angl=unwrap(angle(angl));
- %power_s = flip(power_s);
- % E=sum(sum(ar+1i*ai,1),2);
- % Ef=squeeze(E(1,1,:));
- % power_z2=abs(fftshift(fft(Ef))).^2;                                     % For Spectrum of Radiation pulse    
  
  E=ar+1i*ai;  
  Ef=abs(fftshift(fft(E, [], 3))).^2;                                       % For Spectrum of Radiation pulse    
