@@ -31,7 +31,7 @@ unduPeriod = 0.023;     						                           % undulator period [met
 unduK = 1.2/sqrt(2);    						    	                   % RMS undulator parameter, (K) 
 NumPeriod = 47;                                                            % Number of undulator periods
 unduL = unduPeriod*NumPeriod;  						                       % length of undulator [meter]
-radWavelength = 3.2281e-06;                                                % seed wavelength? [meter]
+radWavelength = 3.2281e-06;                                                % Radiation wavelength [meter]
 fcar =c/radWavelength;                                                     % carrier frequency
 slipp = radWavelength*NumPeriod                                            % Slippage length 
 
@@ -108,7 +108,7 @@ tlngth=length(ar1(1,1,:));
 
 
 [arn1,ain1]=inser_lens2(ar1,ai1,radWavelength,CavityLength,unduL, ...
-    MirrorRadiusCurv/2,dx1,desyn_shft);                                    % implement cavity 
+    MirrorRadiusCurv/2,dx1,desyn_shft);                                    % Field propgation in the cavity 
 
 dshifts_s=desyn_shft/c;                                                    %Desynchronization value in time
 
