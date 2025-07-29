@@ -1,4 +1,4 @@
-function [ar,ai]= desynchronize(arn1,ain1,time_axs,my_time,xlngth,ylngth, LOSS_C)
+function [ar,ai]= desynchronize(arn1,ain1,time_axs,my_time,xlngth,ylngth, PWR_C)
 %% Function to implement desynchronization 
 % walk through the matrix
 % use linear interpolation to implement the effect
@@ -11,8 +11,8 @@ function [ar,ai]= desynchronize(arn1,ain1,time_axs,my_time,xlngth,ylngth, LOSS_C
         
             testi=squeeze(squeeze(ain1(r,c,:)));
             ainn1=interp1(time_axs,testi,my_time, 'linear', 'extrap');
-            ar(r,c,:)=arnn1*LOSS_C^0.5;
-            ai(r,c,:)=ainn1*LOSS_C^0.5;  
+            ar(r,c,:)=arnn1*PWR_C^0.5;
+            ai(r,c,:)=ainn1*PWR_C^0.5;  
         end
     end
 end
