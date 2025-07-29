@@ -1,4 +1,7 @@
 %% MAin file for FEL Oscillator add on for GINGER3d
+% Written by Amir Weinberg for the Uninersity of Hawai`i at Mānoa 2025
+
+
 clear all;
 close all;
 
@@ -38,8 +41,8 @@ slipp = radWavelength*NumPeriod                                            % Sli
 %% UHM Oscillator parameters
 CavityLength= 2.0469;                                                      % Cavity length
 MirrorRadiusCurv=1.3;                                                      % Mirrors Radius of Curvatures
-LOSS_C = 0.93;                                                             % CAVITY Reflectivity    
-npass=200;                                                                   % Number of passes in the cavity
+PWR_C = 0.93;                                                              % CAVITY Reflectivity, power retained in cavity    
+npass=200;                                                                 % Number of passes in the cavity
 dd=0.007;%s[0.007 0.025 0.05];                                             % desynchronization values                                                   % Desynchronization value         
 if TSTIN
     npass=5;
@@ -119,7 +122,7 @@ f_axs=f_axs-median(f_axs)+fcar;                                            % Shi
 my_time=time_axs+dshifts_s;
 
 [ar1,ai1]= desynchronize(arn1,ain1,time_axs,my_time, ...
-    xlngth,ylngth, LOSS_C);                                                % implement desynchronization 
+    xlngth,ylngth, PWR_C);                                                % implement desynchronization 
 
 
 
@@ -165,7 +168,7 @@ for j=2:npass
     Zray(wst1,wst2, CavityLength, unduL, desyn);                           % Return Z rayleigh  
     
     [ar1,ai1]= desynchronize(arn1,ain1,time_axs,my_time, ...
-        xlngth,ylngth, LOSS_C);                                            % implement desynchronization 
+        xlngth,ylngth, PWR_C);                                            % implement desynchronization 
     
     [power_z,power_s,angl]=my_funct(arn,ain,i0,dx);                        % Calculate radiation pulse 
     
