@@ -109,9 +109,9 @@ wa2=waist_x_z1
 
     ff= figure(81);
 
-%subplot(1,4,1, 'Parent', ff); 
+subplot(1,4,1, 'Parent', ff); 
 imagesc(x,y,sum(E_in_p,3)); title('After Undulator'); axis equal tight;  grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_in,'k',num2str(waist_x_in),'LineWidth', 1.5); yline(waist_y_in,'k',num2str(waist_y_in),'LineWidth', 1.5);
-colormap jet; colorbar;
+%colormap jet; colorbar;
 title2 = "After z1 "+num2str(z1)+" Propagation"; 
 titl2 = char(title2);
 subplot(1,4,2, 'Parent', ff); imagesc(x,y,sum(E_z1_p,3)); title(titl2); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z1,'k',num2str(waist_x_z1),'LineWidth', 1.5); yline(waist_y_z1,'k',num2str(waist_y_z1),'LineWidth', 1.5);
@@ -123,13 +123,4 @@ titl4 = char(title4);
 subplot(1,4,4, 'Parent', ff); imagesc(x,y,sum(E_z1b_p,3)); title(titl4); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z1b,'k',num2str(waist_x_z1b),'LineWidth', 1.5); yline(waist_y_z1b,'k',num2str(waist_y_z1b),'LineWidth', 1.5);
 
 colormap jet; colorbar;
-
-
 end
-% %% Visualization E gaussain
-% figure(2);
-% subplot(1,4,1); imagesc(squeeze(abs(E_in))); title('Input Gaussian Beam'); axis equal tight;
-% subplot(1,4,2); imagesc(squeeze(abs(E_z1))); title('After z1 Propagation'); axis equal tight;
-% subplot(1,4,3); imagesc(squeeze(abs(E_z2))); title('After Lens & Lc Propagation'); axis equal tight;
-% subplot(1,4,4); imagesc(squeeze(abs(E_z1b))); title('After 2Lens & z1 Propagation'); axis equal tight;
-% colormap jet; colorbar;
