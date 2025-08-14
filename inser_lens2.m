@@ -3,7 +3,10 @@ function [arn,ain,wa1,wa2]= inser_lens2(ar,ai,lambdaN,Z,LL,fN,dxN,desyn_s)
 
 %% Parameters
 lambda = lambdaN;                                                          % Wavelength (meters)
-N = length(ar(:,1,1));                                                     % Grid size
+N1 = length(ar(:,1,1));                                                    % Grid size
+padd=100;																   % Padd size for zero padding 
+N=N1+padd;
+
 mid=floor(length(ar(1,1,:))/2);
 k0 = 2 * pi / lambda;                                                      % Free-space wavenumber
 
@@ -19,22 +22,31 @@ z11=(Z-LL)/2;                                                              % Pro
 
 
 %% Spatial Frequency Grid (kx, ky)
-kx = (-N/2:N/2-1) * (2*pi / Lx);                                           % Frequency coordinates in x
-ky = (-N/2:N/2-1) * (2*pi / Ly);                                           % Frequency coordinates in y
+%kx = (-N/2:N/2-1) * (2*pi / Lx);                                           % Frequency coordinates in x
+%ky = (-N/2:N/2-1) * (2*pi / Ly);                                           % Frequency coordinates in y
+kx = (-(N-1)/2:(N-1)/2) * (2*pi / Lx);                                      % Frequency coordinates in x
+ky = (-(N-1)/2:(N-1)/2) * (2*pi / Ly);                                      % Frequency coordinates in y
+
 [KX, KY] = meshgrid(kx, ky);                                               % Create meshgrid for (kx, ky)
 
-x = linspace(-Lx/2, Lx/2, N);
+%x = linspace(-Lx/2, Lx/2, N);
+x=(-(N-1)/2:(N-1)/2)*dx;
 xtk= linspace(-Lx/2, Lx/2, N/10);
-y = linspace(-Ly/2, Ly/2, N);
+%y = linspace(-Ly/2, Ly/2, N);
+y=(-(N-1)/2:(N-1)/2)*dy;
 ytk= linspace(-Ly/2, Ly/2, N/10);
 [X, Y] = meshgrid(x, y);                                                   % Create meshgrid for spatial coordinates  
 
 
 
 %% Define Input Field (can TEST Gaussian Beam)
-E_in=ar+1i*ai;                                                             % Input Field
+E_in1=ar+1i*ai;                                                             % Input Field
+E_in=padarray(E_in1,[padd/2,padd/2],0,'both');								% padding the E_in field with zeros
+
 % w0=0.1e-3                     
 % E_in = exp(- (X.^2 + Y.^2) / (2 * w0^2));                                % Gaussian beam
+E_in_p=(abs(E_in)).^2;
+
 
 myE=squeeze(E_in(:,:,mid));
 [waist_x_in, waist_y_in]=find_waistxy(myE, N,x,y);
@@ -47,6 +59,8 @@ E_fft = fftshift(fft2(E_in));
 H1 = exp(1i * z1 * sqrt(k0^2 - KX.^2 - KY.^2));                            % Free-space propagation kernel z1
 E_fft_z1 = E_fft .* H1;                                                    % Apply propagation
 E_z1 = ifft2(ifftshift(E_fft_z1));                                         % Transform back to spatial domain
+
+E_z1_p=(abs(E_z1)).^2;
 
 myE=squeeze(E_z1(:,:,mid));
 [waist_x_z1, waist_y_z1]=find_waistxy(myE, N,x,y)
@@ -62,6 +76,8 @@ H2 = exp(1i * z2 * sqrt(k0^2 - KX.^2 - KY.^2));                            % Fre
 E_fft_focus = E_lens .* H2;                                                % Apply propagation after lens
 E_z2 = ifft2(ifftshift(E_fft_focus));                                      % Transform back to spatial domain
 
+E_z2_p=(abs(E_z2)).^2;
+
 myE=squeeze(E_z2(:,:,mid));
 [waist_x_z2 waist_y_z2]=find_waistxy(myE, N,x,y);
 
@@ -74,29 +90,42 @@ H11 = exp(1i * z11 * sqrt(k0^2 - KX.^2 - KY.^2));                          % Fre
 E_fft_z1 = E_lens2.* H11;                                                  % Apply propagation in Fourier space
 E_z1b = ifft2(ifftshift(E_fft_z1));                                        % Transform back to spatial domain
 
+E_z1b_p=(abs(E_z1b)).^2;
+
+
 myE=squeeze(E_z1b(:,:,mid));
 [waist_x_z1b waist_y_z1b]=find_waistxy(myE, N,x,y);
 
 arn=real(E_z1b);                                                           %Fucntion Return back the fields
 ain=imag(E_z1b);
 
+arn=arn((padd/2+1):N-padd/2,(padd/2+1):N-padd/2,:);							% Truncate the field back
+ain=ain((padd/2+1):N-padd/2,(padd/2+1):N-padd/2,:);
+
 wa1=waist_x_in
 wa2=waist_x_z1
 
 %% Visualization
-figure(2);
-subplot(1,4,1); imagesc(x,y,squeeze(abs(E_in(:,:,mid)))); title('After Undulator'); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_in,'k',num2str(waist_x_in),'LineWidth', 1.5); yline(waist_y_in,'k',num2str(waist_y_in),'LineWidth', 1.5);
+
+    ff= figure(81);
+
+%subplot(1,4,1, 'Parent', ff); 
+imagesc(x,y,sum(E_in_p,3)); title('After Undulator'); axis equal tight;  grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_in,'k',num2str(waist_x_in),'LineWidth', 1.5); yline(waist_y_in,'k',num2str(waist_y_in),'LineWidth', 1.5);
+colormap jet; colorbar;
 title2 = "After z1 "+num2str(z1)+" Propagation"; 
 titl2 = char(title2);
-subplot(1,4,2); imagesc(x,y,squeeze(abs(E_z1(:,:,mid)))); title(titl2); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z1,'k',num2str(waist_x_z1),'LineWidth', 1.5); yline(waist_y_z1,'k',num2str(waist_y_z1),'LineWidth', 1.5);
+subplot(1,4,2, 'Parent', ff); imagesc(x,y,sum(E_z1_p,3)); title(titl2); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z1,'k',num2str(waist_x_z1),'LineWidth', 1.5); yline(waist_y_z1,'k',num2str(waist_y_z1),'LineWidth', 1.5);
 title3 = "After second mirror & Lc"+num2str(z2)+" Propagation"; 
 titl3 = char(title3);
-subplot(1,4,3); imagesc(x,y,squeeze(abs(E_z2(:,:,mid)))); title(titl3); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z2,'k',num2str(waist_x_z2),'LineWidth', 1.5); yline(waist_y_z2,'k',num2str(waist_y_z2),'LineWidth', 1.5);
+subplot(1,4,3, 'Parent', ff); imagesc(x,y,sum(E_z2_p,3)); title(titl3); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z2,'k',num2str(waist_x_z2),'LineWidth', 1.5); yline(waist_y_z2,'k',num2str(waist_y_z2),'LineWidth', 1.5);
 title4 = "After first mirror & z11 "+num2str(z11)+" Propagation before undulator"; 
 titl4 = char(title4);
-subplot(1,4,4); imagesc(x,y,squeeze(abs(E_z1b(:,:,mid)))); title(titl4); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z1b,'k',num2str(waist_x_z1b),'LineWidth', 1.5); yline(waist_y_z1b,'k',num2str(waist_y_z1b),'LineWidth', 1.5);
+subplot(1,4,4, 'Parent', ff); imagesc(x,y,sum(E_z1b_p,3)); title(titl4); axis equal tight; grid on; set(gca, 'XTick',xtk); set(gca, 'YTick',ytk); xline(waist_x_z1b,'k',num2str(waist_x_z1b),'LineWidth', 1.5); yline(waist_y_z1b,'k',num2str(waist_y_z1b),'LineWidth', 1.5);
 
 colormap jet; colorbar;
+
+
+end
 % %% Visualization E gaussain
 % figure(2);
 % subplot(1,4,1); imagesc(squeeze(abs(E_in))); title('Input Gaussian Beam'); axis equal tight;
