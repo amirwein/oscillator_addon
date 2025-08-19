@@ -1,6 +1,7 @@
 function [w0SOL, ZrSOL] = Zray(w11, w22, LL, unduL, desyn_s)
+%% This function calculates and returns the Zrayleigh and waist size 
 
-z1=unduL/2;
+z1=unduL/2;                                            
 z2= z1+(LL-unduL-desyn_s)/2;
 
 syms w0 Zr
