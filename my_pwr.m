@@ -1,4 +1,4 @@
-function [power_z,power_s,angl]= my_funct(ar,ai,i0,dx)
+function [power_z,power_s,angl]= my_pwr(ar,ai,i0,dx)
 %% Function to calculate the Radiation pulse in time and frequency domain
 %ar real part electric field
 %ai imaginary part electric field
