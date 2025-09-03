@@ -126,7 +126,7 @@ my_time=time_axs+dshifts_s;
 
 
 
-[power_z,power_s]=my_funct(ar1,ai1,i0,dx1);                                % Calculate radiation pulse in time and frequency domain 
+[power_z,power_s]=my_pwr(ar1,ai1,i0,dx1);                                % Calculate radiation pulse in time and frequency domain 
 my_pls(1)=max(power_s);                                                    % Save radiation pulse peak power
 
 disp(['pulse1 pass=',num2str(1),' pulse peak power=',num2str(my_pls(1)),'[W]'])     % Display input power
@@ -170,7 +170,7 @@ for j=2:npass
     [ar1,ai1]= desynchronize(arn1,ain1,time_axs,my_time, ...
         xlngth,ylngth, PWR_C);                                            % implement desynchronization 
     
-    [power_z,power_s,angl]=my_funct(arn,ain,i0,dx);                        % Calculate radiation pulse 
+    [power_z,power_s,angl]=my_pwr(arn,ain,i0,dx);                        % Calculate radiation pulse 
     
     my_pls(j)=max(power_s);                                                % Save radiation pulse peak power
    
