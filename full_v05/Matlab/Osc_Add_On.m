@@ -24,18 +24,22 @@ EFF=0;
 
 %% General params
 c = 299792458;
+m_e = 0.511;                                     % electron rest mass [MeV]
 
 %% UHM Beam parameters
-energy  = 40;        						        % electron energy [MeV]
+energy  = 40;        				       % electron kinestic energy [MeV]
 eSpread = 0.5e-2;       					 % fractional rms energy spread 
 emitN   = 8e-6;                 % normalized transverse emittance [mm-mrad]
-currentMax = 30;					                % peak current [Ampere]
+eGamma  = 1 + energy/m_e;                % total relativistic e-beam energy
+currentMax = 37.5;					                % peak current [Ampere]
 betaX_twiss = 1.4;                                       % twiss parameters
 betaY_twiss = 0.24;
 alphaX_twiss = 0.4714;
 alphaY_twiss = 0.0;
 % e-beam bunch rms Gaussian pulse width
-bunch_sigma = 0.8493e-12;                      % 2ps pulse uses 0.8493e-12
+bunch_len = 2e-12;                            % fwhm - pulse duration [sec]
+bunch_sigma = bunch_len/sqrt( log(256) );         % rms - pulse width [sec]
+%bunch_sigma = 0.8493e-12;                      % 2ps pulse uses 0.8493e-12
 %bunch_sigma = 0.215e-12;                      % 0.5ps pulse uses 0.215e-12
 
 
@@ -44,7 +48,8 @@ unduPeriod = 0.023;     						% undulator period  [meter]
 unduK = 1.2/sqrt(2);    				     % RMS undulator parameter, (K) 
 NumPeriod = 47;                               % Number of undulator periods
 unduL = unduPeriod*NumPeriod;  		   % total length of undulator  [meter]
-radWavelength = 3.2281e-06;                 % radiation wavelength  [meter]
+%radWavelength = 3.2281e-06;                 % radiation wavelength  [meter]
+radWavelength = unduPeriod/2/eGamma^2 * (1 + unduK^2); 
 fcar =c/radWavelength;                            % carrier frequency  [hZ]
 slipp = radWavelength*NumPeriod;                 % Slippage length  [meter]
 
@@ -59,7 +64,7 @@ npass=400;                                 % Number of passes in the cavity
 jitterRMS = 0;%0.4e-12;
 
 % Cavity Desync     % desync units = 2 (change in cavity length) / slippage
-cav_d=0.005;
+cav_d=0;
 
 % Electron Desync (ramping)                       % Given in units [desync]
 %dmax = 0;
